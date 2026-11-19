@@ -31,6 +31,10 @@ public class Main {
         File studentsFile = args.length > 0 ? new File(args[0]) : copyBundledStudents();
         log.info("Loading students from {}", studentsFile);
         List<Student> students = system.importStudentDataFromFile(studentsFile);
+        if (students.size() < 5) {
+            log.error("The demo needs at least 5 students, {} has only {}", studentsFile, students.size());
+            return;
+        }
 
         Instructor dana = system.createInstructor("i1", "Dana Levi", "dana.levi@univ.edu");
         Instructor yossi = system.createInstructor("i2", "Yossi Mizrahi", "yossi.mizrahi@univ.edu");
@@ -42,12 +46,10 @@ public class Main {
         system.associateWorkshopWithInstructor(dana, web);
         system.associateWorkshopWithInstructor(yossi, databases);
 
-        // The last student in the file stays free
-        if (students.size() >= 5) {
-            system.createTeam("Alpha", java, List.of(students.get(0).getId(), students.get(1).getId()));
-            system.createTeam("Beta", web, List.of(students.get(2).getId()));
-            system.createTeam("Gamma", databases, List.of(students.get(3).getId()));
-        }
+        // Students from the fifth on stay free
+        system.createTeam("Alpha", java, List.of(students.get(0).getId(), students.get(1).getId()));
+        system.createTeam("Beta", web, List.of(students.get(2).getId()));
+        system.createTeam("Gamma", databases, List.of(students.get(3).getId()));
 
         File instructorsJson = new File("instructors.json");
         File studentsJson = new File("students.json");

@@ -81,16 +81,20 @@
                         <id>run-tester</id>
                         <phase>verify</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>java</goal>
                         </goals>
                         <configuration>
-                            <executable>${java.home}/bin/java</executable>
+                            <mainClass>patmal.workshops.main.Main</mainClass>
                             <classpathScope>test</classpathScope>
-                            <arguments>
-                                <argument>-classpath</argument>
-                                <classpath/>
-                                <argument>patmal.workshops.main.Main</argument>
-                            </arguments>
+                            <!-- The tester calls System.exit: turn it into a build result instead of stopping Maven -->
+                            <blockSystemExit>true</blockSystemExit>
+                            <!-- In-process the tester cannot scan our class path, so it is told which class to use -->
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>workshop.system.class</key>
+                                    <value>patmal.workshops.student.impl.logic.WorkshopSystemImpl</value>
+                                </systemProperty>
+                            </systemProperties>
                         </configuration>
                     </execution>
                 </executions>
